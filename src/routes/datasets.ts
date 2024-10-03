@@ -48,13 +48,13 @@ app.get("", async (c) => {
   return c.json(datasets);
 });
 
-// Read a dataset by ID
-app.get("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Read a dataset
+app.get("/:datasetId", async (c) => {
+  const datasetId = c.req.param("datasetId");
 
   try {
     const dataset = await prisma.dataset.findUnique({
-      where: { id: id },
+      where: { datasetId: datasetId },
       include: {
         project: true,
         shared: true,
@@ -72,13 +72,13 @@ app.get("/:id", async (c) => {
 });
 
 // Get dataset users
-app.get("/:id/users", async (c) => {
-  const id = parseInt(c.req.param("id"));
+app.get("/:datasetId/users", async (c) => {
+  const datasetId = c.req.param("datasetId");
 
   try {
     // Fetch the dataset with related project and shared projects, including users
     const dataset = await prisma.dataset.findUnique({
-      where: { id: id },
+      where: { datasetId: datasetId },
       include: {
         project: { include: { users: true } },
         shared: { include: { users: true } },
@@ -110,9 +110,9 @@ app.get("/:id/users", async (c) => {
   }
 });
 
-// Update a dataset by ID
-app.put("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Update a dataset
+app.put("/:datasetId", async (c) => {
+  const datasetId = c.req.param("datasetId");
   const { newDatasetId } = await c.req.json();
 
   // If necessary fields are missing, return an error
@@ -122,7 +122,7 @@ app.put("/:id", async (c) => {
 
   try {
     const updatedDataset = await prisma.dataset.update({
-      where: { id: id },
+      where: { datasetId: datasetId },
       data: { datasetId: newDatasetId },
       include: { project: { include: { users: true } } },
     });
@@ -133,13 +133,13 @@ app.put("/:id", async (c) => {
   }
 });
 
-// Delete a dataset by ID
-app.delete("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Delete a dataset
+app.delete("/:datasetId", async (c) => {
+  const datasetId = c.req.param("datasetId");
 
   try {
     await prisma.dataset.delete({
-      where: { id: id },
+      where: { datasetId: datasetId },
     });
 
     return c.json({ message: "Dataset deleted successfully" });
@@ -149,8 +149,8 @@ app.delete("/:id", async (c) => {
 });
 
 // Share a dataset with another project
-app.post("/:id/share", async (c) => {
-  const id = parseInt(c.req.param("id"));
+app.post("/:datasetId/share", async (c) => {
+  const datasetId = c.req.param("datasetId");
   const { projectId } = await c.req.json();
 
   // If necessary fields are missing, return an error
@@ -161,7 +161,7 @@ app.post("/:id/share", async (c) => {
   try {
     // Find the dataset
     const dataset = await prisma.dataset.findUnique({
-      where: { id: id },
+      where: { datasetId: datasetId },
     });
 
     if (!dataset) {
@@ -179,7 +179,7 @@ app.post("/:id/share", async (c) => {
 
     // Update the dataset's shared field to include the new project
     const updatedDataset = await prisma.dataset.update({
-      where: { id: id },
+      where: { datasetId: datasetId },
       data: {
         shared: {
           connect: { id: projectToShare.id },
@@ -196,8 +196,8 @@ app.post("/:id/share", async (c) => {
 });
 
 // Remove sharing of a dataset with a project
-app.post("/:id/unshare", async (c) => {
-  const id = parseInt(c.req.param("id"));
+app.post("/:datasetId/unshare", async (c) => {
+  const datasetId = c.req.param("datasetId");
   const { projectId } = await c.req.json();
 
   // If necessary fields are missing, return an error
@@ -206,16 +206,16 @@ app.post("/:id/unshare", async (c) => {
   }
 
   try {
-    // Find the dataset by ID
+    // Find the dataset
     const dataset = await prisma.dataset.findUnique({
-      where: { id: id },
+      where: { datasetId: datasetId },
     });
 
     if (!dataset) {
       return c.json({ error: "Dataset not found" }, 404);
     }
 
-    // Find the project by ID to unshare
+    // Find the project to unshare
     const projectToUnshare = await prisma.project.findUnique({
       where: { projectId: projectId },
     });
@@ -226,7 +226,7 @@ app.post("/:id/unshare", async (c) => {
 
     // Update the dataset's shared field to disconnect the project
     const updatedDataset = await prisma.dataset.update({
-      where: { id: id },
+      where: { datasetId: datasetId },
       data: {
         shared: {
           disconnect: { id: projectToUnshare.id }, // Remove the project from the shared list
