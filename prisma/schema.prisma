@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Entity-relationship diagram
+//
+// +--------------+
+// |  Instrument  |
+// +--------------+
+// | instrumentId |
+// | displayName  |
+// +--------------+
+//
+// +------------+         +--------------+         +-------------+
+// |   User     |         |   Project    |         |   Dataset   |
+// +------------+         +--------------+         +-------------+
+// | id         |<------->| id           |<------->| id          |
+// | userId     |    M:N  | projectId    |    1:N  | datasetId   |
+// +------------+         |              |         | projectId   |
+//                        |              |         +-------------+
+//                        | shared (M:N) |<------->| shared (M:N)|
+//                        +--------------+         +-------------+
+
+model Instrument {
+  id           Int    @id @default(autoincrement())
+  instrumentId String @unique
+  displayName  String
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  userId   String    @unique
+  projects Project[]
+}
+
+model Project {
+  id        Int       @id @default(autoincrement())
+  projectId String    @unique
+  users     User[]
+  datasets  Dataset[]
+  shared    Dataset[] @relation("Shared")
+}
+
+model Dataset {
+  id        Int       @id @default(autoincrement())
+  datasetId String    @unique
+  projectId Int
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  shared    Project[] @relation("Shared")
+}
