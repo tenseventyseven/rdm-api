@@ -30,13 +30,13 @@ app.get("/", async (c) => {
   return c.json(users);
 });
 
-// Read a user by ID
-app.get("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Read a user
+app.get("/:userId", async (c) => {
+  const userId = c.req.param("userId");
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: id },
+      where: { userId: userId },
       include: { projects: true },
     });
 
@@ -50,9 +50,9 @@ app.get("/:id", async (c) => {
   }
 });
 
-// Update a user by ID
-app.put("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Update a user
+app.put("/:userId", async (c) => {
+  const userId = c.req.param("userId");
   const body = await c.req.json();
   const { newUserId } = body;
 
@@ -63,7 +63,7 @@ app.put("/:id", async (c) => {
 
   try {
     const updatedUser = await prisma.user.update({
-      where: { id: id },
+      where: { userId: userId },
       data: { userId: newUserId },
     });
 
@@ -73,13 +73,13 @@ app.put("/:id", async (c) => {
   }
 });
 
-// Delete a user by ID
-app.delete("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Delete a user
+app.delete("/:userId", async (c) => {
+  const userId = c.req.param("userId");
 
   try {
     await prisma.user.delete({
-      where: { id: id },
+      where: { userId: userId },
     });
 
     return c.json({ message: "User deleted successfully" });
