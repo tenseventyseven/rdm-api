@@ -10,10 +10,10 @@ const app = new Hono();
 
 app.use(logger());
 
-app.route("/users", users);
-app.route("/projects", projects);
-app.route("/datasets", datasets);
-app.route("/instruments", instruments);
+app.route("/api/users", users);
+app.route("/api/projects", projects);
+app.route("/api/datasets", datasets);
+app.route("/api/instruments", instruments);
 
 const port = 3001;
 console.log(`Server is running on port ${port}`);
