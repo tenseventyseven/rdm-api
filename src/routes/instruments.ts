@@ -38,13 +38,13 @@ app.get("/", async (c) => {
   }
 });
 
-// Read an instrument by ID
-app.get("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Read an instrument
+app.get("/:instrumentId", async (c) => {
+  const instrumentId = c.req.param("instrumentId");
 
   try {
     const instrument = await prisma.instrument.findUnique({
-      where: { id: id },
+      where: { instrumentId: instrumentId },
     });
 
     if (!instrument) {
@@ -57,9 +57,9 @@ app.get("/:id", async (c) => {
   }
 });
 
-// Update an instrument by ID
-app.put("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Update an instrument
+app.put("/:instrumentId", async (c) => {
+  const instrumentId = c.req.param("instrumentId");
   const { newInstrumentId, newDisplayName } = await c.req.json();
 
   // If no fields to update, return an error
@@ -75,7 +75,7 @@ app.put("/:id", async (c) => {
 
   try {
     const updatedInstrument = await prisma.instrument.update({
-      where: { id: id },
+      where: { instrumentId: instrumentId },
       data: {
         ...(newInstrumentId && { newInstrumentId }), // Update instrumentId if provided
         ...(newDisplayName && { newDisplayName }), // Update displayName if provided
@@ -88,13 +88,13 @@ app.put("/:id", async (c) => {
   }
 });
 
-// Delete an instrument by ID
-app.delete("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Delete an instrument
+app.delete("/:instrumentId", async (c) => {
+  const instrumentId = c.req.param("instrumentId");
 
   try {
     await prisma.instrument.delete({
-      where: { id: id },
+      where: { instrumentId: instrumentId },
     });
 
     return c.json({ message: "Instrument deleted successfully" });
