@@ -33,13 +33,13 @@ app.get("", async (c) => {
   return c.json(projects);
 });
 
-// Read a project by ID
-app.get("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Read a project
+app.get("/:projectId", async (c) => {
+  const projectId = c.req.param("projectId");
 
   try {
     const project = await prisma.project.findUnique({
-      where: { id: id },
+      where: { projectId: projectId },
       include: { users: true, datasets: true, shared: true },
     });
 
@@ -54,12 +54,12 @@ app.get("/:id", async (c) => {
 });
 
 // Get project users
-app.get("/:id/users", async (c) => {
-  const id = parseInt(c.req.param("id"));
+app.get("/:projectId/users", async (c) => {
+  const projectId = c.req.param("projectId");
 
   try {
     const project = await prisma.project.findUnique({
-      where: { id: id },
+      where: { projectId: projectId },
       include: { users: true },
     });
 
@@ -82,9 +82,9 @@ app.get("/:id/users", async (c) => {
   }
 });
 
-// Update a project by ID
-app.put("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Update a project
+app.put("/:projectId", async (c) => {
+  const projectId = c.req.param("projectId");
   const { newProjectId } = await c.req.json();
 
   // If necessary fields are missing, return an error
@@ -94,7 +94,7 @@ app.put("/:id", async (c) => {
 
   try {
     const updatedProject = await prisma.project.update({
-      where: { id: id },
+      where: { projectId: projectId },
       data: { projectId: newProjectId },
       include: { users: true },
     });
@@ -105,13 +105,13 @@ app.put("/:id", async (c) => {
   }
 });
 
-// Delete a project by ID
-app.delete("/:id", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Delete a project
+app.delete("/:projectId", async (c) => {
+  const projectId = c.req.param("projectId");
 
   try {
     await prisma.project.delete({
-      where: { id: id },
+      where: { projectId: projectId },
     });
 
     return c.json({ message: "Project deleted successfully" });
@@ -120,9 +120,9 @@ app.delete("/:id", async (c) => {
   }
 });
 
-// Update users for a project by ID
-app.put("/:id/users", async (c) => {
-  const id = parseInt(c.req.param("id"));
+// Update users for a project
+app.put("/:projectId/users", async (c) => {
+  const projectId = c.req.param("projectId");
   const { userIds } = await c.req.json();
 
   // If necessary fields are missing, return an error
@@ -132,7 +132,7 @@ app.put("/:id/users", async (c) => {
 
   try {
     const updatedProject = await prisma.project.update({
-      where: { id: id },
+      where: { projectId: projectId },
       data: {
         users: {
           set: userIds.map((userId: string) => ({ userId: userId })),
