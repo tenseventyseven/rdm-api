@@ -30,7 +30,12 @@ app.post("/", async (c) => {
         projectId: project.id,
       },
     });
-    return c.json(newDataset);
+
+    const response = {
+      datasetId: datasetId,
+      projectId: projectId,
+    };
+    return c.json(response);
   } catch (error) {
     console.error(error);
     return c.json({ error: "Dataset creation failed" }, 400);
