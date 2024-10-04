@@ -32,6 +32,7 @@ app.post("/", async (c) => {
     });
 
     const response = {
+      id: newDataset.id,
       datasetId: datasetId,
       projectId: projectId,
     };
