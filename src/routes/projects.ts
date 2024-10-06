@@ -82,6 +82,40 @@ app.get("/:projectId/users", async (c) => {
   }
 });
 
+// Get project datasets
+app.get("/:projectId/datasets", async (c) => {
+  const projectId = c.req.param("projectId");
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: { projectId: projectId },
+      include: { datasets: true, shared: true },
+    });
+
+    if (!project) {
+      return c.json({ error: "Project not found" }, 404);
+    }
+
+    // Get unique datasetIds
+    const projectDatasetIds = project.datasets.map(
+      (dataset) => dataset.datasetId
+    );
+    const projectSharedIds = project.shared.map((dataset) => dataset.datasetId);
+    const uniqueDatasetIds = [
+      ...new Set([...projectDatasetIds, ...projectSharedIds]),
+    ];
+
+    return c.json({
+      id: project.id,
+      projectId: project.projectId,
+      datasetIds: uniqueDatasetIds,
+    });
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: "Error fetching project datasets" }, 500);
+  }
+});
+
 // Update a project
 app.put("/:projectId", async (c) => {
   const projectId = c.req.param("projectId");
