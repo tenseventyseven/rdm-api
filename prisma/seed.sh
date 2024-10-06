@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 BASE_URL=$1
 
@@ -17,12 +18,12 @@ curl -X POST --location "${BASE_URL}/api/projects" --header 'Content-Type: appli
 curl -X POST --location "${BASE_URL}/api/projects" --header 'Content-Type: application/json' --data '{ "projectId": "P002" }'
 
 echo "Creating datasets"
-D001=uuidgen
-D002=uuidgen
-D003=uuidgen
-curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '"$D001"', "projectId": "P001" }'
-curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '"$D002"', "projectId": "P001" }'
-curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '"$D003"', "projectId": "P002" }'
+D001=$(uuidgen)
+D002=$(uuidgen)
+D003=$(uuidgen)
+curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '\"$D001\"', "projectId": "P001" }'
+curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '\"$D002\"', "projectId": "P001" }'
+curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '\"$D003\"', "projectId": "P002" }'
 
 echo "Associating users to projects"
 curl -X PUT --location "${BASE_URL}/api/projects/P001/users" --header 'Content-Type: application/json' --data '{ "userIds": ["u.ja", "yang.e", "milton.m"] }'
