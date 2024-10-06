@@ -22,11 +22,11 @@ curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: appli
 curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": "D003", "projectId": "P002" }'
 
 echo "Associating users to projects"
-curl -X PUT --location "${BASE_URL}/api/projects/1/users" --header 'Content-Type: application/json' --data '{ "userIds": ["u.ja", "yang.e"] }'
-curl -X PUT --location "${BASE_URL}/api/projects/2/users" --header 'Content-Type: application/json' --data '{ "userIds": ["u.ja", "milton.m"] }'
+curl -X PUT --location "${BASE_URL}/api/projects/P001/users" --header 'Content-Type: application/json' --data '{ "userIds": ["u.ja", "yang.e"] }'
+curl -X PUT --location "${BASE_URL}/api/projects/P002/users" --header 'Content-Type: application/json' --data '{ "userIds": ["u.ja", "milton.m"] }'
 
 echo "Sharing a dataset with a project"
-curl -X POST --location "${BASE_URL}/api/datasets/1/share" --header 'Content-Type: application/json' --data '{ "projectId": "P002" }'
+curl -X POST --location "${BASE_URL}/api/datasets/D001/share" --header 'Content-Type: application/json' --data '{ "projectId": "P002" }'
 
 echo "Creating instruments"
 curl -X POST --location "${BASE_URL}/api/instruments" --header 'Content-Type: application/json' --data '{ "instrumentId": "I001", "displayName": "Microscope 001" }'
