@@ -23,9 +23,9 @@ echo "Creating datasets..."
 D001=$(uuidgen)
 D002=$(uuidgen)
 D003=$(uuidgen)
-mkdir /vast/projects/ResearchDataManagement/${D001}
-mkdir /vast/projects/ResearchDataManagement/${D002}
-mkdir /vast/projects/ResearchDataManagement/${D003}
+mkdir /vast/projects/ResearchDataManagement/Datasets/${D001}
+mkdir /vast/projects/ResearchDataManagement/Datasets/${D002}
+mkdir /vast/projects/ResearchDataManagement/Datasets/${D003}
 curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '\"$D001\"', "projectId": "P001" }'
 curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '\"$D002\"', "projectId": "P001" }'
 curl -X POST --location "${BASE_URL}/api/datasets" --header 'Content-Type: application/json' --data '{ "datasetId": '\"$D003\"', "projectId": "P002" }'
